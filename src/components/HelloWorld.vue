@@ -145,7 +145,8 @@
           text: 'Frequently Asked Questions',
           href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
         },
-      ],
+      ]
     }),
+    props:["question"]
   }
 </script>
