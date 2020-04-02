@@ -1,52 +1,69 @@
 <template>
   <div class="question">
-    <h3>{{question.question}}</h3>
-    <input v-model="playerAnswer" />
+    <h3>{{singleClue.question}}</h3>
+    <input :disabled="disable" v-model="playerAnswer" />
     <button v-on:click="checkAnswers">Submit</button>
-    <h4 v-if="correctAnswer">Correct</h4>
-    <h4 v-else-if="correctAnswer===false" style="background:red">Wrong</h4>
-    <h3>Prize Total: ${{prize}}</h3>
+    <h4 v-if="correctAnswer" style="background:green">Correct</h4>
+    <h4 v-else-if="correctAnswer===false && attempts < 3">Wrong: Please try again </h4>
+    <h4 v-if="attempts === 3">   
+      Sorry the correct answer is: {{singleClue.answer}}
+    </h4>
+    <h3>Attempts: {{attempts}}</h3>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
   name: "Clue",
   data: function() {
     return {
-      question:{},
       playerAnswer:"",
-      correctAnswer: null,
-      prize:0
+      correctAnswer: null, 
+      attempts:0,
+      disable:false
     }
   },
-  mounted: function() {
-    axios.get(`http://www.jservice.io/api/clues?category=${this.$route.params.id}&value=${this.$route.params.value}`)
-      .then((response)=>{
-        console.log(response)
-        this.question = response.data[0];
-        console.log(this.question);
-      })
-      .catch((err)=>{
-        console.log(err.message);
-      })
+  created: function() {
+    const values ={
+      id: this.$route.params.id,
+      value: this.$route.params.value
+    }
+    this.getClue(values)
   },
   methods: {
+    ...mapActions(['getClue', 'incrementPrize']),
+    direct: function(){
+      setInterval(()=>{
+        this.$router.push('/')
+      }, 3000)
+    },
     checkAnswers: function() {
-      const lowerCaseAnswer = this.question.answer.toLowerCase();
+      const lowerCaseAnswer = this.singleClue.answer.toLowerCase();
       const lowerCasePlayerAnswer = this.playerAnswer.toLowerCase();
 
       if(lowerCaseAnswer.includes(lowerCasePlayerAnswer) === true){
         this.correctAnswer = true;
-        this.prize+=this.question.value;
+        this.incrementPrize(this.singleClue);
+        this.direct();
       }else{
         this.correctAnswer=false;
+        this.attempts+=1
+        this.playerAnswer=""
       }
-
+      if(this.attempts===3){
+        this.disable = true;
+        this.direct();
+      }
     }
-  }
+  },
+  computed:{
+    ...mapGetters(['singleClue', 'getPrize'])
+  },
+  beforeDestroy: function() {
+    clearInterval(this.direct)
+  } 
 }
 </script>
 
@@ -56,7 +73,7 @@ input{
 }
 
 h4{
-  background: green;
+  background: red;
   color: whitesmoke;
 }
 

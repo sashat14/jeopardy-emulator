@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h1>{{questions[0].category.title}}</h1>
-      <div v-for="question in questions" :key="question.id">
+    <h1>{{allClues[0].category.title}}</h1>
+      <div v-for="clue in allClues" :key="clue.id">
         <div>
-          <router-link class="value" :to="`/category/${question.category.id}/${question.value}`">{{question.value}}</router-link>
+          <router-link v-on:click='selected=true' class="value" :to="`/category/${clue.category.id}/${clue.value}`">{{clue.value}}</router-link>
         </div>
       </div>
       <router-view></router-view>
@@ -11,32 +11,23 @@
 </template>
 
 <script>
-import axios from 'axios';
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
-    name:"Category",
-    components:{
-    },
-    data: function() {
-    return{
-      questions: []
+  name:"Category",
+  data: function(){
+    return {
+      selected: false
     }
   },
-  mounted: function() {
-    axios.get(`http://www.jservice.io/api/clues?count=6&category=${this.$route.params.id}`)
-      .then((response)=>{
-        console.log(response)
-        this.questions = response.data;
-        console.log(this.questions);
-      })
-      .catch((err)=>{
-        console.log(err.message);
-      })
+  created: function() {
+    const id = this.$route.params.id;
+    this.getClues(id)
   },
   methods:{
-    
-  } 
-
+    ...mapActions(['getClues'])
+  },
+  computed: mapGetters(['allClues'])
 }
 </script>
 

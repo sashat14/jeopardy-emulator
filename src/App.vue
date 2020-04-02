@@ -5,7 +5,8 @@
         app
         color="primary"
         dark
-      > 
+      >
+      <h3>Prize Total: ${{getPrize}}</h3>
       </v-app-bar>
       <v-content>
         <div>
@@ -20,10 +21,14 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
 
 export default {
   name: 'App',
   components:{
+  },
+  computed: {
+    ...mapGetters(['getPrize'])
   }
 };
 </script>
