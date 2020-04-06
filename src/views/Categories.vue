@@ -1,6 +1,5 @@
 <template>
   <div v-if="allCategories.length>0"  class="categories-container">
-    <!-- <h1>Categories</h1> -->
     <div v-for="category in allCategories" :key="category.id" class="border">
       <template>
         <v-card class="d-inline-block mx-auto" :to="`/category/${category.id}`"
@@ -11,7 +10,6 @@
           </v-container>
         </v-card>
       </template>
-    <!-- <router-link :to="`/category/${category.id}`">{{category.title}}</router-link> -->
     </div>
   </div>
 </template>

@@ -6,7 +6,7 @@ const state = {
 
 const actions = {
     async getCategories({ commit }) {
-        const response = await axios.get('http://www.jservice.io/api/categories?count=8');
+        const response = await axios.get('https://www.jservice.io/api/categories?count=8');
         commit('setCategories', response.data);
      }
 };

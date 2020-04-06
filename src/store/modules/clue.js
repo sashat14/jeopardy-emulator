@@ -7,7 +7,7 @@ const state = {
 
 const actions = {
     async getClue({ commit }, {id, value}){
-        const response = await axios.get(`http://www.jservice.io/api/clues?category=${id}&value=${value}`)
+        const response = await axios.get(`https://www.jservice.io/api/clues?category=${id}&value=${value}`)
         commit('setClue', response.data[0]);
     },
 
