@@ -3,17 +3,18 @@
     <v-app>
       <v-app-bar
         app
-        color="primary"
+        color="blue accent-4"
         dark
       >
-      <h3>Prize Total: ${{getPrize}}</h3>
+      <div class="header">
+        <h1><router-link to="/">JEOPARDY</router-link></h1>
+        <div class="prize">
+          <img src="./assets/cash-usd.png" />
+          <h2>{{getPrize}}</h2>
+        </div>
+      </div>
       </v-app-bar>
       <v-content>
-        <div>
-          <router-link to="/category/:id">Category</router-link> |
-          <router-link to="/">Categories</router-link> |
-          <router-link to="/category/:id/:value">Clues</router-link> |
-        </div>
         <router-view></router-view>
       </v-content>
     </v-app>
@@ -32,3 +33,19 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .header{
+    width:100%;
+    display: flex;
+    justify-content: space-around;
+  }
+  .prize{
+    display: flex;
+    align-items: flex-end;
+  }
+  header a{
+    text-decoration: none;
+    color: whitesmoke;
+  }
+</style>

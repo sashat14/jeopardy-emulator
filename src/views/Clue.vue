@@ -1,14 +1,64 @@
 <template>
-  <div class="question">
-    <h3>{{singleClue.question}}</h3>
-    <input :disabled="disable" v-model="playerAnswer" />
-    <button v-on:click="checkAnswers">Submit</button>
-    <h4 v-if="correctAnswer" style="background:green">Correct</h4>
-    <h4 v-else-if="correctAnswer===false && attempts < 3">Wrong: Please try again </h4>
-    <h4 v-if="attempts === 3">   
-      Sorry the correct answer is: {{singleClue.answer}}
-    </h4>
-    <h3>Attempts: {{attempts}}</h3>
+  <div class="question-container">
+    <template>
+    <div class="padding-1">
+      <template>  
+      <v-card
+        class="mx-auto card"
+        elevation=8 color="blue-grey lighten-5" :tile="true"
+      >
+      <v-container>
+    <v-card-text class="card-text">
+      <h3 class="display-1 text--primary">{{singleClue.question}}</h3>
+    </v-card-text>
+    <v-divider></v-divider>
+    <v-card-actions class="actions center">
+      <template>
+      <v-form
+      ref="form"
+      class="form center-2"
+      @submit="checkAnswers"
+    >
+      <v-text-field
+        v-model="playerAnswer"
+        label="Answer here"
+        class="input"
+        required
+      ></v-text-field>
+      
+      <v-btn
+        color="blue-grey grey lighten-2--text"
+        class="mr-4"
+        @click="checkAnswers"
+      >
+        Submit
+      </v-btn>
+    </v-form>
+    </template>
+    </v-card-actions>
+
+    <v-card-text>
+      <p>Attempt:{{attempts}}</p>
+    </v-card-text>
+    </v-container>
+  </v-card>
+  </template>
+  <v-banner v-if="isSubmitted" class="actions" 
+  single-line transition="slide-y-transition"
+  :color="correctAnswer?'success':'red'"
+  >
+      <h4 v-if="correctAnswer">Correct</h4>
+      <h4 v-if="correctAnswer===false && attempts < 4">Wrong: Please try again </h4>
+      <h4 v-if="attempts===4 && correctAnswer===false">   
+        Sorry the correct answer is: {{singleClue.answer}}
+      </h4>
+      <template v-slot:actions="{ dismiss }">
+        <v-btn class="reset" text color="grey darken-4" @click="dismiss(); reset()">Dismiss</v-btn>
+      </template>
+    </v-banner>
+    
+    </div>
+</template>
   </div>
 </template>
 
@@ -21,8 +71,9 @@ export default {
     return {
       playerAnswer:"",
       correctAnswer: null, 
-      attempts:0,
-      disable:false
+      attempts:1,
+      interval:'',
+      isSubmitted: false
     }
   },
   created: function() {
@@ -33,17 +84,23 @@ export default {
     this.getClue(values)
   },
   methods: {
-    ...mapActions(['getClue', 'incrementPrize']),
+    ...mapActions(['getClue', 'incrementPrize', 'decrementPrize']),
     direct: function(){
-      setInterval(()=>{
+     this.interval = setInterval(()=>{
         this.$router.push('/')
-      }, 3000)
+        .catch(err=>{
+          console.log(err)
+        })
+      }, 4000)
     },
-    checkAnswers: function() {
+    checkAnswers: function($event) {
+      console.log($event);
       const lowerCaseAnswer = this.singleClue.answer.toLowerCase();
       const lowerCasePlayerAnswer = this.playerAnswer.toLowerCase();
 
-      if(lowerCaseAnswer.includes(lowerCasePlayerAnswer) === true){
+      $event.preventDefault();
+
+      if(lowerCaseAnswer === lowerCasePlayerAnswer){
         this.correctAnswer = true;
         this.incrementPrize(this.singleClue);
         this.direct();
@@ -52,34 +109,91 @@ export default {
         this.attempts+=1
         this.playerAnswer=""
       }
-      if(this.attempts===3){
-        this.disable = true;
+      if(this.attempts===4 && this.correctAnswer===false){
+        this.decrementPrize(this.singleClue);
         this.direct();
       }
+      console.log(lowerCaseAnswer)
+      console.log(lowerCasePlayerAnswer)
+      console.log(this.singleClue.answer)
+      this.isSubmitted=true;
+      console.log($event);
+    },
+    reset: function() {
+      this.isSubmitted=false;
     }
   },
   computed:{
     ...mapGetters(['singleClue', 'getPrize'])
   },
   beforeDestroy: function() {
-    clearInterval(this.direct)
+    clearInterval(this.interval)
   } 
 }
 </script>
 
 <style scoped>
-input{
-  border: solid black 1px;
+.center{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
 }
-
-h4{
-  background: red;
-  color: whitesmoke;
+.center-2{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-
-button{
-  background: lightgray;
+.question-container{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+.question{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  border: solid black 1.5px;
+  margin-top: 100px;
+  padding:100px;
+}
+.padding-1{
+  padding:75px;
+}
+.card{
+  padding:70px;
+  width: 70%;
+  height: 475px;
+}
+.form{
+  width:80%;
+}
+.input{
+  width:100%;
+}
+.card-text{
+  margin-bottom: 30px;
+}
+.actions{
+  margin-top:50px;
+}
+@media only screen and (max-width: 600px) {
+   .padding-1{
+     padding: 0;
+   }
+   .card{
+     padding: 0;
+     width:100%;
+     height:500px;
+     margin-top:30px;
+   }
+   .actions{
+     margin-top:25px;
+   }
 }
 </style>
+
 
 

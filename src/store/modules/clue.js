@@ -13,14 +13,20 @@ const actions = {
 
     incrementPrize({commit}, clue) {
         let clueValue = clue.value;
-        commit('setPrize', clueValue);
+        commit('increasePrize', clueValue);
+    },
+
+    decrementPrize({commit}, clue) {
+        let clueValue = clue.value;
+        commit('decreasePrize', clueValue)
     }
 };
 
 
 const mutations = {
     setClue: (state, clue) => (state.clue = clue),
-    setPrize: (state, prize) => (state.prize += prize)
+    increasePrize: (state, prize) => (state.prize += prize),
+    decreasePrize:(state, prize) => (state.prize -= prize)
 };
 
 const getters = {
