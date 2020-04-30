@@ -60,15 +60,15 @@ export default {
     align-content: center;
     flex-wrap: wrap;
     margin-top: 75px;
-    box-shadow: 5px 5px 8px 5px rgba(10, 13, 25, 0.51);
+    /* box-shadow: 5px 5px 8px 5px rgba(10, 13, 25, 0.51); */
   }
 
 .title{
   text-align: center;
-  margin-top:50px;
   padding: 25px;
   background: lightgray;
   box-shadow: 5px 5px 8px 5px rgba(10, 13, 25, 0.61);
+  margin: 50px 20px 0 20px;
 }
 
 

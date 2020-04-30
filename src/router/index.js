@@ -27,8 +27,6 @@ const routes = [
 const router = new VueRouter({
   routes,
   mode:"history"
-  //base: "http://www.localhost:8080"
-
 })
 
 export default router

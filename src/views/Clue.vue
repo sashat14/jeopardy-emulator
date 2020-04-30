@@ -165,7 +165,7 @@ export default {
 .card{
   padding:70px;
   width: 70%;
-  height: 475px;
+  height: 500px;
 }
 .form{
   width:80%;
@@ -179,15 +179,25 @@ export default {
 .actions{
   margin-top:50px;
 }
-@media only screen and (max-width: 600px) {
+
+@media only screen and (max-width: 1260px) {
+   .card{
+     padding: 5%;
+     width:90%;
+     margin:0 15px 0 15px;
+   }
+   .actions{
+     margin-top:25px;
+   }
+}
+@media only screen and (max-width: 650px) {
    .padding-1{
      padding: 0;
    }
    .card{
      padding: 0;
      width:100%;
-     height:500px;
-     margin-top:30px;
+     margin:30px 0 0 0;
    }
    .actions{
      margin-top:25px;
